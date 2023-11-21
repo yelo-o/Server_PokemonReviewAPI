@@ -36,7 +36,7 @@ public class AuthController {
         return "Welcome this endpoint is not secure";
     }
 
-		@PostMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserDto userDto) {
         if (userRepository.existsByUsername(userDto.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);

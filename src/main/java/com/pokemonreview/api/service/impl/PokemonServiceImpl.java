@@ -82,8 +82,12 @@ public class PokemonServiceImpl implements PokemonService {
         Pokemon pokemon = getExistPokemon(id);
 
         //Entity의 setter method 호출을 해도 update query가 실행 됨(Dirty checking)
-        pokemon.setName(pokemonDto.getName());
-        pokemon.setType(pokemonDto.getType());
+        if (pokemonDto.getName() != null) {
+            pokemon.setName(pokemonDto.getName());
+        }
+        if (pokemonDto.getType() != null) {
+            pokemon.setType(pokemonDto.getType());
+        }
 
         //Pokemon updatedPokemon = pokemonRepository.save(pokemon); -> Transactional이 걸려있기 때문에 할 필요 없음
         return mapToDto(pokemon);

@@ -19,8 +19,8 @@ public class AppConfig {
     public CommandLineRunner test(PokemonRepository pokemonRepository) {
         return args -> {
             System.out.println("**** Pokemon Insert 시작");
-            pokemonRepository.deleteAll();
-            List<Pokemon> pokemonList = IntStream.range(0, 10)
+//            pokemonRepository.deleteAll(); //ddl-auto:create면 주석처리해도 됨
+            List<Pokemon> pokemonList = IntStream.rangeClosed(1, 10)
                     .mapToObj(i -> Pokemon.builder()
                             .name("pikachu" + i)
                             .type(PokemonType.ELECTRIC)

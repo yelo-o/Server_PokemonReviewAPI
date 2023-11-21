@@ -7,6 +7,7 @@ import com.pokemonreview.api.models.Pokemon;
 import com.pokemonreview.api.repository.PokemonRepository;
 import com.pokemonreview.api.service.PokemonService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor //final로 선언된 변수 생성자 초기화
 public class PokemonServiceImpl implements PokemonService {
     private final PokemonRepository pokemonRepository;
+    private final ModelMapper modelMapper;
 
     //생성자 주입
 //    public PokemonServiceImpl(PokemonRepository pokemonRepository) {
@@ -30,13 +32,13 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public PokemonDto createPokemon(PokemonDto pokemonDto) {
-        Pokemon pokemon = mapToEntity(pokemonDto);
+//        Pokemon pokemon = mapToEntity(pokemonDto);
+        Pokemon pokemon = modelMapper.map(pokemonDto, Pokemon.class); //modelMapper로 변경
+
         Pokemon newPokemon = pokemonRepository.save(pokemon);
-//        PokemonDto pokemonResponse = new PokemonDto();
-//        pokemonResponse.setId(newPokemon.getId());
-//        pokemonResponse.setName(newPokemon.getName());
-//        pokemonResponse.setType(newPokemon.getType());
-        return mapToDto(newPokemon);
+
+//        return mapToDto(newPokemon);
+        return modelMapper.map(newPokemon, PokemonDto.class); //modelMapper로 변경
     }
 
     @Override

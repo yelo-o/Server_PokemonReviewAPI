@@ -5,6 +5,7 @@ import com.pokemonreview.api.models.PokemonType;
 import com.pokemonreview.api.models.Review;
 import com.pokemonreview.api.repository.PokemonRepository;
 import com.pokemonreview.api.repository.ReviewRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,5 +56,15 @@ public class AppConfig {
             System.out.println("#### Review Insert 끝");
 
         };
+    }
+
+    //https://modelmapper.org/
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        //매핑할때 값이 null이면 매핑하지 않고 skip하는 설정
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+
+        return modelMapper;
     }
 }

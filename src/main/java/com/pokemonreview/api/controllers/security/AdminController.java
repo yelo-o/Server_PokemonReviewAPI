@@ -7,6 +7,7 @@ import com.pokemonreview.api.models.security.UserEntity;
 import com.pokemonreview.api.repository.security.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,14 +30,11 @@ public class AdminController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public PageResponse getAllUsers(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false)
-            int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "2", required = false)
-            int pageSize) {
+    public PageResponse<?> getAllUsers(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "2", required = false) int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id")
-                .descending());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
         Page<UserEntity> userEntityPage = userRepository.findAll(pageable);
         List<UserEntity> listOfUser = userEntityPage.getContent();
         List<UserDto> userDtoList =
@@ -50,7 +48,7 @@ public class AdminController {
                                 .build())
                         .collect(Collectors.toList());
 
-        PageResponse userResponse = new PageResponse();
+        PageResponse<UserDto> userResponse = new PageResponse();
         userResponse.setContent(userDtoList);
         userResponse.setPageNo(userEntityPage.getNumber());
         userResponse.setPageSize(userEntityPage.getSize());
@@ -69,8 +67,7 @@ public class AdminController {
                 .findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        UserDto existUserDto = mapToDto(existUser);
-        return existUserDto;
+        return mapToDto(existUser);
     }
 
     private UserDto mapToDto(UserEntity userEntity) {
@@ -85,6 +82,7 @@ public class AdminController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable("id") int userId,
             @RequestBody UserDto userDto) {
@@ -102,6 +100,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable("id") int userId) {
         UserEntity userEntity = userRepository
                 .findById(userId)
